@@ -1,0 +1,14 @@
+{
+  "setting": {
+    "tables": [
+      {
+        "name": "T1",
+        "numberOfSeat": 4
+      },
+      {
+        "name": "T2",
+        "numberOfSeat": 5
+      }
+    ]
+  }
+}
