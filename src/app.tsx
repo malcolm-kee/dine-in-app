@@ -8,7 +8,7 @@ import * as routes from './routes';
 
 // install Router
 // routes, landing page, customer page, owner page
-// TODO: owner page, setup, number of tables and number of chairs
+// owner page, setup, number of tables and number of chairs
 // TODO: customer page has one input, numbers -> result: table numbers or queue number
 
 // nice to have, owner page current status

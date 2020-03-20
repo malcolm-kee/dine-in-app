@@ -3,7 +3,7 @@ import { UiStatus } from 'type/base-type';
 import { fetchJson, RequestInitPlus } from './fetch-json';
 import { useIsMounted } from './use-is-mounted';
 
-export const useRemoteData = <DataType>(
+export const useRemoteData = <DataType extends {}>(
   url: RequestInfo,
   init?: RequestInit
 ) => {

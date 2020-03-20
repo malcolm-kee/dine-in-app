@@ -4,19 +4,33 @@ import * as React from 'react';
 import { Table, UiStatus } from 'type/base-type';
 
 export type TableSettingFormProps = {
-  initialForm?: Table;
+  focused: Table | null;
   onSave: (tableData: Table) => Promise<unknown>;
+  onCancel: () => void;
 };
 
 export const TableSettingForm = (props: TableSettingFormProps) => {
-  const isCreateForm = !props.initialForm;
+  const isCreateForm = !props.focused;
   const [name, setName] = React.useState(
-    props.initialForm ? props.initialForm.name : ''
+    props.focused ? props.focused.name : ''
   );
   const [seatNum, setSeatNum] = React.useState(
-    props.initialForm ? String(props.initialForm.numberOfSeat) : ''
+    props.focused ? String(props.focused.numberOfSeat) : ''
   );
   const [status, setStatus] = React.useState<UiStatus>('ok');
+
+  React.useEffect(() => {
+    if (props.focused) {
+      setName(props.focused.name);
+      setSeatNum(String(props.focused.numberOfSeat));
+    }
+  }, [props.focused]);
+
+  const resetState = () => {
+    setName('');
+    setSeatNum('');
+    props.onCancel();
+  };
 
   return (
     <form
@@ -30,10 +44,7 @@ export const TableSettingForm = (props: TableSettingFormProps) => {
           })
           .then(() => {
             setStatus('ok');
-            if (isCreateForm) {
-              setSeatNum('');
-              setName('');
-            }
+            resetState();
           });
       }}
     >
@@ -52,9 +63,14 @@ export const TableSettingForm = (props: TableSettingFormProps) => {
         required
         disabled={status === 'busy'}
       />
-      <Button type="submit" disabled={status === 'busy'}>
-        {isCreateForm ? 'Add Table' : 'Edit Table'}
-      </Button>
+      <div className="py-4 flex justify-between">
+        <Button type="submit" disabled={status === 'busy'}>
+          {isCreateForm ? 'Add Table' : 'Save Table'}
+        </Button>
+        <Button type="reset" variant="none" onClick={resetState}>
+          Cancel
+        </Button>
+      </div>
     </form>
   );
 };

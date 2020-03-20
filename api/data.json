@@ -3,11 +3,19 @@
     "tables": [
       {
         "name": "T1",
-        "numberOfSeat": 4
+        "numberOfSeat": 5
       },
       {
         "name": "T2",
         "numberOfSeat": 5
+      },
+      {
+        "name": "S3",
+        "numberOfSeat": 3
+      },
+      {
+        "name": "S4",
+        "numberOfSeat": 3
       }
     ]
   }
