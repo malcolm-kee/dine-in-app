@@ -1,9 +1,17 @@
 import cx from 'classnames';
 import * as React from 'react';
 
-export const Container = (props: JSX.IntrinsicElements['div']) => (
+export type ContainerProps = {
+  maxWidth?: 'md' | 'lg' | 'xl' | '2xl';
+} & JSX.IntrinsicElements['div'];
+
+export const Container = ({ maxWidth = 'md', ...props }: ContainerProps) => (
   <div
     {...props}
-    className={cx('max-w-md mx-auto py-3 px-4', props.className)}
+    className={cx(
+      'mx-auto py-3 px-4 max-w',
+      `max-w-${maxWidth}`,
+      props.className
+    )}
   />
 );

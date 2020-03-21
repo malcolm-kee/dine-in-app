@@ -6,6 +6,12 @@
 export type UiStatus = 'ok' | 'busy' | 'error';
 
 export type Table = {
-  name: string;
+  label: string;
   numberOfSeat: number;
+};
+
+export type Restaurant = {
+  name: string;
+  tables: Array<Table>;
+  slug: string;
 };
