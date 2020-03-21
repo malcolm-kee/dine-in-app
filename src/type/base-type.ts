@@ -5,9 +5,13 @@
 
 export type UiStatus = 'ok' | 'busy' | 'error';
 
+export type TableStatus = 'occupied' | 'vacant';
+
 export type Table = {
+  _id: string;
   label: string;
   numberOfSeat: number;
+  status: TableStatus;
 };
 
 export type Restaurant = {

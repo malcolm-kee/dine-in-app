@@ -1,10 +1,11 @@
+import { CopyButton } from 'components/copy-button';
 import { Spinner } from 'components/spinner';
+import { useRestaurantEvent } from 'lib/use-restaurant-event';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { getReceptionUrl } from 'routes';
-import { Restaurant, UiStatus } from 'type/base-type';
+import { Restaurant, UiStatus, TableStatus } from 'type/base-type';
 import { getDetails } from '../owner.service';
-import { CopyButton } from 'components/copy-button';
 
 export type OwnerOverviewProps = {
   restaurantSlug: string;
@@ -34,6 +35,34 @@ export const OwnerOverview = (props: OwnerOverviewProps) => {
     };
   }, [props.restaurantSlug]);
 
+  const updateTableStatus = (tableId: string, status: TableStatus) => {
+    setDetails(prevDetails =>
+      prevDetails
+        ? {
+            ...prevDetails,
+            tables: prevDetails.tables.map(t =>
+              t._id === tableId
+                ? {
+                    ...t,
+                    status,
+                  }
+                : t
+            ),
+          }
+        : prevDetails
+    );
+  };
+
+  useRestaurantEvent(props.restaurantSlug, {
+    onMessage: msg => {
+      if (msg.type === 'table_occupied') {
+        updateTableStatus(msg.payload.tableId, 'occupied');
+      } else if (msg.type === 'table_vacant') {
+        updateTableStatus(msg.payload.tableId, 'vacant');
+      }
+    },
+  });
+
   return (
     <div>
       {status === 'busy' && <Spinner />}
@@ -53,9 +82,11 @@ const OwnerOverviewDisplay = ({ details }: { details: Restaurant }) => {
       <div className="px-4 py-2 my-4 shadow bg-white">
         <h2 className="text-lg mb-2">Tables</h2>
         <ul className="grid grid-cols-3 sm:grid-cols-5">
-          {details.tables.map((table, i) => (
-            <li key={i} className="mb-2 p-2 m-1">
-              <div className="text-lg font-semibold">{table.label}</div>
+          {details.tables.map(table => (
+            <li key={table._id} className="mb-2 p-2 m-1">
+              <div className="text-lg font-semibold">
+                {table.label} <small>{table.status}</small>
+              </div>
               <div>({table.numberOfSeat} seats)</div>
             </li>
           ))}
