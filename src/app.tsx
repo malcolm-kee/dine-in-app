@@ -1,3 +1,4 @@
+import { Annoucement } from 'pages/annoucement';
 import { Overview } from 'pages/overview';
 import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
@@ -16,6 +17,7 @@ export function App() {
       <Route path={routes.registerUrl} component={Registration} />
       <Route path={routes.getOwnerOverviewUrl()} component={Overview} />
       <Route path={routes.getReceptionUrl()} component={Reception} />
+      <Route path={routes.getAnnoucementUrl()} component={Annoucement} />
       <Route path={routes.homeUrl} exact component={Home} />
       <Route component={NotFoundPage} />
     </Switch>

@@ -3,7 +3,8 @@ import { Button } from 'components/button';
 import { CopyButton } from 'components/copy-button';
 import { Dialog } from 'components/dialog';
 import { Spinner } from 'components/spinner';
-import { useRestaurantEvent } from 'lib/use-restaurant-event';
+import { SeatAvailableAnnouncement } from 'modules/restaurant/components/seat-available-announcement';
+import { useRestaurantEvent } from 'modules/restaurant/use-restaurant-event';
 import * as React from 'react';
 import { FaCheck, FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -70,7 +71,17 @@ export const OwnerOverview = (props: OwnerOverviewProps) => {
   return (
     <div>
       {status === 'busy' && <Spinner />}
-      {details && <OwnerOverviewDisplay details={details} />}
+      {details && (
+        <>
+          <h1 className="text-2xl text-center mb-4">{details.name}</h1>
+          <div className="lg:grid grid-cols-3 gap-6">
+            <div className="col-span-2">
+              <OwnerOverviewDisplay details={details} />
+            </div>
+            <SeatAvailableAnnouncement restaurant={props.restaurantSlug} />
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -82,7 +93,6 @@ const OwnerOverviewDisplay = ({ details }: { details: Restaurant }) => {
 
   return (
     <>
-      <h1 className="text-2xl text-center mb-4">{details.name}</h1>
       <div className="px-4 py-2 my-4 shadow bg-white">
         <h2 className="text-lg mb-2">Tables</h2>
         <ul className="grid grid-cols-3 sm:grid-cols-4">

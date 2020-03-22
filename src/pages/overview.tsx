@@ -7,7 +7,7 @@ export const Overview = () => {
   const { restaurant } = useParams<{ restaurant: string }>();
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="5xl">
       <OwnerOverview restaurantSlug={restaurant} />
     </Container>
   );

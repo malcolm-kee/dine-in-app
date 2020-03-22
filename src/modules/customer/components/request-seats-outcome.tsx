@@ -1,14 +1,18 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { RequestSeatsResult } from '../customer.type';
 import { Button } from 'components/button';
+import { getAnnoucementUrl } from 'routes';
 
 export type RequestSeatsOutcomeProps = {
   result: RequestSeatsResult;
+  restaurant: string;
   onRefresh: () => void;
 };
 
 export const RequestSeatsOutcome = ({
   result,
+  restaurant,
   onRefresh,
 }: RequestSeatsOutcomeProps) => {
   let content: React.ReactNode;
@@ -74,8 +78,11 @@ export const RequestSeatsOutcome = ({
   return (
     <div className="text-center">
       {content}
-      <div className="py-3">
-        <Button onClick={onRefresh}>Next Customer</Button>
+      <div className="py-3 flex justify-between items-center">
+        <Button onClick={onRefresh} autoFocus>
+          Next Customer
+        </Button>
+        <Link to={getAnnoucementUrl(restaurant)}>View Updates</Link>
       </div>
     </div>
   );

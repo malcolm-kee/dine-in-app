@@ -1,9 +1,9 @@
-import { useSocket, UseSocketOptions } from './use-socket';
+import { useSocket, UseSocketOptions } from 'lib/use-socket';
 
 const socketUrl = process.env.REACT_APP_WEBSOCKET_URL as string;
 
 interface UseRestaurantEventOption extends UseSocketOptions {
-  onMessage: (msg: Messages) => void;
+  onMessage: (msg: RestaurantMessage) => void;
 }
 
 export const useRestaurantEvent = (
@@ -14,7 +14,7 @@ export const useRestaurantEvent = (
 /**
  * Copied from `dine-in` project
  */
-type EventPayload = {
+export type EventPayload = {
   setup_changed: {
     restaurant: string;
   };
@@ -35,6 +35,8 @@ type EventPayload = {
   reservation_fulfilled: {
     id: string;
     restaurant: string;
+    queueNum: number;
+    tableNames: string[];
   };
 };
 
@@ -47,4 +49,4 @@ type MessagesMap = {
   [key in keyof EventPayload]: MapPayload<key>;
 };
 
-type Messages = MessagesMap[keyof MessagesMap];
+export type RestaurantMessage = MessagesMap[keyof MessagesMap];

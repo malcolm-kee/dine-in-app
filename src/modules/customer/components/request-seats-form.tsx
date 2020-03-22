@@ -20,6 +20,7 @@ export const RequestSeatsForm = (props: RequestSeatsFormProps) => {
   return result ? (
     <RequestSeatsOutcome
       result={result}
+      restaurant={props.restaurantSlug}
       onRefresh={() => {
         setResult(null);
         setPax('');
@@ -52,6 +53,7 @@ export const RequestSeatsForm = (props: RequestSeatsFormProps) => {
         label="Pax"
         required
         disabled={status === 'busy'}
+        autoFocus
       />
       <div className="py-3">
         <Button type="submit" className="w-full" disabled={status === 'busy'}>
