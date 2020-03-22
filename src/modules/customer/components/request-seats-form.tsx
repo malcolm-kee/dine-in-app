@@ -18,7 +18,13 @@ export const RequestSeatsForm = (props: RequestSeatsFormProps) => {
   const [result, setResult] = React.useState<RequestSeatsResult | null>(null);
 
   return result ? (
-    <RequestSeatsOutcome result={result} />
+    <RequestSeatsOutcome
+      result={result}
+      onRefresh={() => {
+        setResult(null);
+        setPax('');
+      }}
+    />
   ) : (
     <form
       onSubmit={ev => {

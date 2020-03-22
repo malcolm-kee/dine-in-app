@@ -7,10 +7,8 @@ import { Reception } from './pages/reception';
 import { Registration } from './pages/registration';
 import * as routes from './routes';
 
-// nice to have, owner page current status
-// nice to have, owner page update table status
-// nice to have, graphical representation of table
 // nice to have, annoucement
+// nice to have, graphical representation of table
 
 export function App() {
   return (

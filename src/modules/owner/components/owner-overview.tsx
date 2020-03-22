@@ -1,11 +1,15 @@
+import cx from 'classnames';
+import { Button } from 'components/button';
 import { CopyButton } from 'components/copy-button';
+import { Dialog } from 'components/dialog';
 import { Spinner } from 'components/spinner';
 import { useRestaurantEvent } from 'lib/use-restaurant-event';
 import * as React from 'react';
+import { FaCheck, FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { getReceptionUrl } from 'routes';
-import { Restaurant, UiStatus, TableStatus } from 'type/base-type';
-import { getDetails } from '../owner.service';
+import { Restaurant, Table, TableStatus, UiStatus } from 'type/base-type';
+import { getDetails, updateTableStatus } from '../owner.service';
 
 export type OwnerOverviewProps = {
   restaurantSlug: string;
@@ -81,13 +85,10 @@ const OwnerOverviewDisplay = ({ details }: { details: Restaurant }) => {
       <h1 className="text-2xl text-center mb-4">{details.name}</h1>
       <div className="px-4 py-2 my-4 shadow bg-white">
         <h2 className="text-lg mb-2">Tables</h2>
-        <ul className="grid grid-cols-3 sm:grid-cols-5">
+        <ul className="grid grid-cols-3 sm:grid-cols-4">
           {details.tables.map(table => (
             <li key={table._id} className="mb-2 p-2 m-1">
-              <div className="text-lg font-semibold">
-                {table.label} <small>{table.status}</small>
-              </div>
-              <div>({table.numberOfSeat} seats)</div>
+              <OwnerOverviewTable table={table} restaurant={details.slug} />
             </li>
           ))}
         </ul>
@@ -107,6 +108,89 @@ const OwnerOverviewDisplay = ({ details }: { details: Restaurant }) => {
           </Link>
         </div>
       </div>
+    </>
+  );
+};
+
+const OwnerOverviewTable = ({
+  table,
+  restaurant,
+}: {
+  table: Table;
+  restaurant: string;
+}) => {
+  const [showConfirmation, setShowConfirmation] = React.useState(false);
+  const [status, setStatus] = React.useState<UiStatus>('ok');
+
+  const handleUpdate = () => {
+    setStatus('busy');
+
+    updateTableStatus(
+      restaurant,
+      table._id,
+      table.status === 'occupied' ? 'vacant' : 'occupied'
+    )
+      .then(result => {
+        setShowConfirmation(false);
+        setStatus('ok');
+      })
+      .catch(() => setStatus('error'));
+  };
+
+  const isBusy = status === 'busy';
+
+  return (
+    <>
+      <div className="text-lg font-semibold flex justify-between items-center">
+        {table.label}{' '}
+        <small
+          className={cx(
+            'inline-block',
+            table.status === 'occupied' ? 'text-red-800' : 'text-green-600'
+          )}
+        >
+          {table.status === 'occupied' ? (
+            <FaUser className="fill-current" />
+          ) : (
+            <FaCheck className="fill-current" />
+          )}
+          <span className="sr-only">{table.status}</span>
+        </small>
+      </div>
+      <div>({table.numberOfSeat} seats)</div>
+      <div className="mt-2">
+        <Button
+          onClick={() => setShowConfirmation(true)}
+          className="w-full"
+          size="small"
+          disabled={isBusy}
+        >
+          {table.status === 'occupied' ? 'Release' : 'Use'}
+        </Button>
+      </div>
+      <Dialog
+        aria-label="Table update confirmation"
+        isOpen={showConfirmation}
+        onDismiss={() => setShowConfirmation(false)}
+      >
+        <p>
+          {table.status === 'occupied'
+            ? 'Are you sure the customer has left and want to make it available for others?'
+            : 'Are you sure to make this table as occupied?'}
+        </p>
+        <div className="pt-2 flex justify-between">
+          <Button onClick={handleUpdate} disabled={isBusy}>
+            {isBusy ? 'Updating...' : 'Yes'}
+          </Button>
+          <Button
+            onClick={() => setShowConfirmation(false)}
+            disabled={isBusy}
+            variant="none"
+          >
+            Cancel
+          </Button>
+        </div>
+      </Dialog>
     </>
   );
 };
