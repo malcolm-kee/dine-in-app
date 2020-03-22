@@ -2,6 +2,8 @@
 
 Restaurant seating management system.
 
+## Demo
+
 Registration of restaurant
 
 <div style="max-width:600px; margin: 0 auto;">
