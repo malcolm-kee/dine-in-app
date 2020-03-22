@@ -2,6 +2,18 @@
 
 Restaurant seating management system.
 
+Registration of restaurant
+
+<div style="max-width:600px; margin: 0 auto;">
+
+![UI for owner registration](screenshots/dine-in-registration.gif)
+
+</div>
+
+Seat management in action
+
+![UI for seat management](screenshots/dine-in-usage.gif)
+
 ## Get Started
 
 1. Install all dependencies
