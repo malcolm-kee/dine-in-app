@@ -24,6 +24,7 @@
     "start": "npm run build:css && react-scripts start",
     "build": "npm run build:css && react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
     "build:css": "postcss src/css/tailwind.css -o src/css/main.css"
   },
   "eslintConfig": {
@@ -47,6 +48,8 @@
     "autoprefixer": "^9.7.4",
     "node-sass": "^4.13.1",
     "postcss-cli": "^7.1.0",
-    "tailwindcss": "^1.2.0"
+    "prettier": "^2.0.1",
+    "tailwindcss": "^1.2.0",
+    "xhr-mock": "^2.5.1"
   }
 }
