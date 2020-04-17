@@ -1,7 +1,7 @@
 import { Container } from 'components/container';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { registerUrl } from '../routes';
+import { loginUrl, registerUrl } from '../routes';
 
 export const Home = () => {
   return (
@@ -14,6 +14,12 @@ export const Home = () => {
         className="block text-center text-gray-100 my-4 text-lg py-2 shadow rounded bg-teal-500"
       >
         Register Your Business
+      </Link>
+      <Link
+        to={loginUrl}
+        className="block text-center text-gray-100 my-4 text-lg py-2 shadow rounded bg-teal-500"
+      >
+        Login
       </Link>
     </Container>
   );

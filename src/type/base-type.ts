@@ -19,3 +19,9 @@ export type Restaurant = {
   tables: Array<Table>;
   slug: string;
 };
+
+export type RequestOptions = {
+  headers: {
+    [key: string]: string;
+  };
+};

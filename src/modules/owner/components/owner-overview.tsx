@@ -10,6 +10,7 @@ import { FaCheck, FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { getReceptionUrl } from 'routes';
 import { Restaurant, Table, TableStatus, UiStatus } from 'type/base-type';
+import { useWithAuthHeader } from '../owner.context';
 import { getDetails, updateTableStatus } from '../owner.service';
 
 export type OwnerOverviewProps = {
@@ -17,15 +18,16 @@ export type OwnerOverviewProps = {
 };
 
 export const OwnerOverview = (props: OwnerOverviewProps) => {
-  const [details, setDetails] = React.useState<Restaurant | null>(null);
+  const [details, setRestaurant] = React.useState<Restaurant | null>(null);
   const [status, setStatus] = React.useState<UiStatus>('busy');
+  const getDetailsCall = useWithAuthHeader(getDetails);
 
   React.useEffect(() => {
     let isCurrent = true;
-    getDetails(props.restaurantSlug)
-      .then(res => {
+    getDetailsCall(props.restaurantSlug)
+      .then((res) => {
         if (isCurrent) {
-          setDetails(res);
+          setRestaurant(res);
           setStatus('ok');
         }
       })
@@ -38,14 +40,14 @@ export const OwnerOverview = (props: OwnerOverviewProps) => {
     return () => {
       isCurrent = false;
     };
-  }, [props.restaurantSlug]);
+  }, [props.restaurantSlug, getDetailsCall]);
 
   const updateTableStatus = (tableId: string, status: TableStatus) => {
-    setDetails(prevDetails =>
+    setRestaurant((prevDetails) =>
       prevDetails
         ? {
             ...prevDetails,
-            tables: prevDetails.tables.map(t =>
+            tables: prevDetails.tables.map((t) =>
               t._id === tableId
                 ? {
                     ...t,
@@ -59,7 +61,7 @@ export const OwnerOverview = (props: OwnerOverviewProps) => {
   };
 
   useRestaurantEvent(props.restaurantSlug, {
-    onMessage: msg => {
+    onMessage: (msg) => {
       if (msg.type === 'table_occupied') {
         updateTableStatus(msg.payload.tableId, 'occupied');
       } else if (msg.type === 'table_vacant') {
@@ -96,7 +98,7 @@ const OwnerOverviewDisplay = ({ details }: { details: Restaurant }) => {
       <div className="px-4 py-2 my-4 shadow bg-white">
         <h2 className="text-lg mb-2">Tables</h2>
         <ul className="grid grid-cols-3 sm:grid-cols-4">
-          {details.tables.map(table => (
+          {details.tables.map((table) => (
             <li key={table._id} className="mb-2 p-2 m-1">
               <OwnerOverviewTable table={table} restaurant={details.slug} />
             </li>
@@ -131,16 +133,17 @@ const OwnerOverviewTable = ({
 }) => {
   const [showConfirmation, setShowConfirmation] = React.useState(false);
   const [status, setStatus] = React.useState<UiStatus>('ok');
+  const updateTableCall = useWithAuthHeader(updateTableStatus);
 
   const handleUpdate = () => {
     setStatus('busy');
 
-    updateTableStatus(
-      restaurant,
-      table._id,
-      table.status === 'occupied' ? 'vacant' : 'occupied'
-    )
-      .then(result => {
+    updateTableCall({
+      restaurantSlug: restaurant,
+      tableId: table._id,
+      status: table.status === 'occupied' ? 'vacant' : 'occupied',
+    })
+      .then(() => {
         setShowConfirmation(false);
         setStatus('ok');
       })

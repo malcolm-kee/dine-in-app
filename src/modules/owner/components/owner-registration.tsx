@@ -2,6 +2,7 @@ import { Button } from 'components/button';
 import { TextField } from 'components/text-field';
 import { useIsMounted } from 'lib/use-is-mounted';
 import * as React from 'react';
+import { FaCheck, FaTimes } from 'react-icons/fa';
 import { Restaurant, UiStatus } from 'type/base-type';
 import { register } from '../owner.service';
 
@@ -13,6 +14,9 @@ export const OwnerRegistration = (props: OwnerRegistrationProps) => {
   const [name, setName] = React.useState('');
   const [tableNum, setTableNum] = React.useState('');
   const [seatNum, setSeatNum] = React.useState('');
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
   const isMounted = useIsMounted();
   const [status, setStatus] = React.useState<UiStatus>('ok');
 
@@ -20,11 +24,20 @@ export const OwnerRegistration = (props: OwnerRegistrationProps) => {
 
   return (
     <form
-      onSubmit={ev => {
+      onSubmit={(ev) => {
         ev.preventDefault();
+        if (password !== confirmPassword) {
+          return;
+        }
         setStatus('busy');
-        register(name, Number(tableNum), Number(seatNum))
-          .then(result => {
+        register({
+          name,
+          username,
+          password,
+          numOfTable: Number(tableNum),
+          numberOfSeat: Number(seatNum),
+        })
+          .then((result) => {
             if (isMounted.current) {
               setStatus('ok');
               props.onAccountCreated(result);
@@ -64,6 +77,45 @@ export const OwnerRegistration = (props: OwnerRegistrationProps) => {
         required
         disabled={isBusy}
       />
+      <div className="pt-4 block">
+        <fieldset>
+          <legend className="w-full text-sm text-center">Login Details</legend>
+          <TextField
+            value={username}
+            onChangeValue={setUsername}
+            label="Username"
+            required
+          />
+          <TextField
+            value={password}
+            onChangeValue={setPassword}
+            type="password"
+            label="Password"
+            required
+            minLength={8}
+          />
+          <TextField
+            value={confirmPassword}
+            onChangeValue={setConfirmPassword}
+            type="password"
+            label="Confirm Password"
+            required
+            helpText={
+              confirmPassword &&
+              (confirmPassword === password ? (
+                <span className="flex items-center text-green-700">
+                  Passwords match <FaCheck className="fill-current ml-2" />
+                </span>
+              ) : (
+                <span className="flex items-center text-red-700">
+                  Passwords does not match{' '}
+                  <FaTimes className="fill-current ml-2" />
+                </span>
+              ))
+            }
+          />
+        </fieldset>
+      </div>
       <div className="py-3">
         <Button disabled={isBusy} type="submit" className="w-full">
           {isBusy ? 'Registering...' : 'Register'}
