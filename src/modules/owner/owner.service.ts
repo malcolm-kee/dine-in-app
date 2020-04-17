@@ -1,5 +1,6 @@
 import { createEmptyArray } from 'lib/array';
 import { fetchJson } from 'lib/fetch-json';
+import { createJsonRequest } from 'lib/create-json-request';
 import { RequestOptions, Restaurant, TableStatus } from 'type/base-type';
 
 const ownerApiUrl = process.env.REACT_APP_OWNER_URL as string;
@@ -42,9 +43,10 @@ export const ownerLogin = (username: string, password: string) =>
   }) as Promise<{ access_token: string }>;
 
 export const getDetails = (restaurantSlug: string, options: RequestOptions) =>
-  fetchJson(`${ownerApiUrl}/setting/${restaurantSlug}`, options) as Promise<
-    Restaurant
-  >;
+  createJsonRequest<Restaurant>(
+    `${ownerApiUrl}/setting/${restaurantSlug}`,
+    options
+  );
 
 export type UpdateTableData = {
   restaurantSlug: string;

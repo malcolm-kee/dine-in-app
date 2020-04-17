@@ -20,26 +20,26 @@ export type OwnerOverviewProps = {
 export const OwnerOverview = (props: OwnerOverviewProps) => {
   const [details, setRestaurant] = React.useState<Restaurant | null>(null);
   const [status, setStatus] = React.useState<UiStatus>('busy');
+  const [errors, setErrors] = React.useState<string[]>([]);
   const getDetailsCall = useWithAuthHeader(getDetails);
 
   React.useEffect(() => {
-    let isCurrent = true;
-    getDetailsCall(props.restaurantSlug)
+    const { xhr, fetch } = getDetailsCall(props.restaurantSlug);
+    fetch()
       .then((res) => {
-        if (isCurrent) {
-          setRestaurant(res);
+        if (res.ok) {
+          setRestaurant(res.data);
           setStatus('ok');
+        } else {
+          setStatus('error');
+          setErrors(res.errors);
         }
       })
       .catch(() => {
-        if (isCurrent) {
-          setStatus('error');
-        }
+        setStatus('error');
       });
 
-    return () => {
-      isCurrent = false;
-    };
+    return () => xhr.abort();
   }, [props.restaurantSlug, getDetailsCall]);
 
   const updateTableStatus = (tableId: string, status: TableStatus) => {
@@ -73,6 +73,15 @@ export const OwnerOverview = (props: OwnerOverviewProps) => {
   return (
     <div>
       {status === 'busy' && <Spinner />}
+      {errors.length > 0 && (
+        <div>
+          <li>
+            {errors.map((err, i) => (
+              <li key={i}>{err}</li>
+            ))}
+          </li>
+        </div>
+      )}
       {details && (
         <>
           <h1 className="text-2xl text-center mb-4">{details.name}</h1>

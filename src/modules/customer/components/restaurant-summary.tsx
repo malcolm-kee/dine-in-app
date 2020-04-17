@@ -12,23 +12,19 @@ export const RestaurantSummary = (props: RestaurantSummaryProps) => {
   const [status, setStatus] = React.useState<UiStatus>('busy');
 
   React.useEffect(() => {
-    let isCurrent = true;
-    getDetails(props.restaurantSlug)
-      .then(res => {
-        if (isCurrent) {
-          setDetails(res);
+    const { xhr, fetch } = getDetails(props.restaurantSlug);
+    fetch()
+      .then((res) => {
+        if (res.ok) {
+          setDetails(res.data);
           setStatus('ok');
-        }
-      })
-      .catch(() => {
-        if (isCurrent) {
+        } else {
           setStatus('error');
         }
-      });
+      })
+      .catch(() => setStatus('error'));
 
-    return () => {
-      isCurrent = false;
-    };
+    return () => xhr.abort();
   }, [props.restaurantSlug]);
 
   return (

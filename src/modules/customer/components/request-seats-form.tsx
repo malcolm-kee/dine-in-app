@@ -1,6 +1,5 @@
 import { Button } from 'components/button';
 import { TextField } from 'components/text-field';
-import { useIsMounted } from 'lib/use-is-mounted';
 import * as React from 'react';
 import { UiStatus } from 'type/base-type';
 import { requestSeats } from '../customer.service';
@@ -14,8 +13,15 @@ export type RequestSeatsFormProps = {
 export const RequestSeatsForm = (props: RequestSeatsFormProps) => {
   const [pax, setPax] = React.useState('');
   const [status, setStatus] = React.useState<UiStatus>('ok');
-  const isMounted = useIsMounted();
+  const xhrRef = React.useRef<XMLHttpRequest | null>(null);
   const [result, setResult] = React.useState<RequestSeatsResult | null>(null);
+
+  React.useEffect(
+    () => () => {
+      xhrRef.current && xhrRef.current.abort();
+    },
+    []
+  );
 
   return result ? (
     <RequestSeatsOutcome
@@ -28,19 +34,22 @@ export const RequestSeatsForm = (props: RequestSeatsFormProps) => {
     />
   ) : (
     <form
-      onSubmit={ev => {
+      onSubmit={(ev) => {
         ev.preventDefault();
-        requestSeats(props.restaurantSlug, Number(pax))
-          .then(response => {
-            if (isMounted.current) {
+        const { xhr, fetch } = requestSeats(props.restaurantSlug, Number(pax));
+        xhrRef.current = xhr;
+
+        fetch()
+          .then((response) => {
+            if (response.ok) {
               setStatus('ok');
-              setResult(response);
+              setResult(response.data);
+            } else {
+              setStatus('error');
             }
           })
           .catch(() => {
-            if (isMounted.current) {
-              setStatus('error');
-            }
+            setStatus('error');
           });
       }}
     >

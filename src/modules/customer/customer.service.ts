@@ -1,16 +1,16 @@
-import { fetchJson } from 'lib/fetch-json';
+import { createJsonRequest } from 'lib/create-json-request';
 import { Restaurant } from 'type/base-type';
 import { RequestSeatsResult } from './customer.type';
 
 const customerApiUrl = process.env.REACT_APP_CUSTOMER_URL as string;
 
 export const getDetails = (restaurantSlug: string) =>
-  fetchJson(`${customerApiUrl}/${restaurantSlug}`) as Promise<Restaurant>;
+  createJsonRequest<Restaurant>(`${customerApiUrl}/${restaurantSlug}`);
 
 export const requestSeats = (restaurantSlug: string, pax: number) =>
-  fetchJson(`${customerApiUrl}/${restaurantSlug}`, {
+  createJsonRequest<RequestSeatsResult>(`${customerApiUrl}/${restaurantSlug}`, {
     method: 'POST',
-    data: {
+    body: JSON.stringify({
       pax,
-    },
-  }) as Promise<RequestSeatsResult>;
+    }),
+  });
