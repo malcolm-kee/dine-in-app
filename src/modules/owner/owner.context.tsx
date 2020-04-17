@@ -90,17 +90,20 @@ export const OwnerProvider = (props: { children: React.ReactNode }) => {
   );
 };
 
-export const useWithAuthHeader = <Data, Return>(
-  apicall: (data: Data, options: RequestOptions) => Return
+export const useWithAuthHeader = <Params extends any[], Return>(
+  apicall: (options: RequestOptions, ...params: Params) => Return
 ) => {
   const { accessToken } = React.useContext(OwnerAuthStateContext);
   const result = React.useCallback(
-    (data: Data) =>
-      apicall(data, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+    (...params: Params) =>
+      apicall(
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
-      }),
+        ...params
+      ),
     [apicall, accessToken]
   );
   return result;

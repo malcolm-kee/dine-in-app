@@ -42,7 +42,10 @@ export const ownerLogin = (username: string, password: string) =>
     },
   }) as Promise<{ access_token: string }>;
 
-export const getDetails = (restaurantSlug: string, options: RequestOptions) =>
+export const getOwnedRestaurants = (options: RequestOptions) =>
+  createJsonRequest<Restaurant[]>(ownerApiUrl + '/restaurants', options);
+
+export const getDetails = (options: RequestOptions, restaurantSlug: string) =>
   createJsonRequest<Restaurant>(
     `${ownerApiUrl}/setting/${restaurantSlug}`,
     options
@@ -55,8 +58,8 @@ export type UpdateTableData = {
 };
 
 export const updateTableStatus = (
-  data: UpdateTableData,
-  options: RequestOptions
+  options: RequestOptions,
+  data: UpdateTableData
 ) =>
   fetchJson(`${ownerApiUrl}/table/${data.restaurantSlug}`, {
     ...options,
