@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import { Alert } from 'components/alert';
 import { Button } from 'components/button';
 import { CopyButton } from 'components/copy-button';
 import { Dialog } from 'components/dialog';
@@ -74,13 +75,13 @@ export const OwnerOverview = (props: OwnerOverviewProps) => {
     <div>
       {status === 'busy' && <Spinner />}
       {errors.length > 0 && (
-        <div>
-          <li>
+        <Alert variant="error">
+          <ul>
             {errors.map((err, i) => (
               <li key={i}>{err}</li>
             ))}
-          </li>
-        </div>
+          </ul>
+        </Alert>
       )}
       {details && (
         <>

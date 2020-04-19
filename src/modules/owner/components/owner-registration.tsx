@@ -1,6 +1,6 @@
+import { Alert } from 'components/alert';
 import { Button } from 'components/button';
 import { TextField } from 'components/text-field';
-import { useIsMounted } from 'lib/use-is-mounted';
 import * as React from 'react';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { Restaurant, UiStatus } from 'type/base-type';
@@ -17,8 +17,16 @@ export const OwnerRegistration = (props: OwnerRegistrationProps) => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
-  const isMounted = useIsMounted();
+  const xhrRef = React.useRef<XMLHttpRequest | null>(null);
   const [status, setStatus] = React.useState<UiStatus>('ok');
+  const [errors, setErrors] = React.useState<string[]>([]);
+
+  React.useEffect(
+    () => () => {
+      xhrRef.current && xhrRef.current.abort();
+    },
+    []
+  );
 
   const isBusy = status === 'busy';
 
@@ -30,26 +38,41 @@ export const OwnerRegistration = (props: OwnerRegistrationProps) => {
           return;
         }
         setStatus('busy');
-        register({
+        const { xhr, fetch } = register({
           name,
           username,
           password,
           numOfTable: Number(tableNum),
           numberOfSeat: Number(seatNum),
-        })
+        });
+
+        xhrRef.current = xhr;
+
+        fetch()
           .then((result) => {
-            if (isMounted.current) {
+            if (result.ok) {
               setStatus('ok');
-              props.onAccountCreated(result);
+              props.onAccountCreated(result.data);
+            } else {
+              setErrors(result.errors);
+              setStatus('error');
             }
           })
           .catch(() => {
-            if (isMounted.current) {
-              setStatus('error');
-            }
+            setStatus('error');
+            setErrors(['Unknown errors']);
           });
       }}
     >
+      {errors.length > 0 && (
+        <Alert variant="error">
+          <ul>
+            {errors.map((err, i) => (
+              <li key={i}>{err}</li>
+            ))}
+          </ul>
+        </Alert>
+      )}
       <TextField
         value={name}
         onChangeValue={setName}

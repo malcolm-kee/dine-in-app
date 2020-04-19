@@ -20,7 +20,7 @@ export const register = ({
   numOfTable,
   numberOfSeat,
 }: RegisterOwnerData) =>
-  fetchJson(ownerApiUrl, {
+  createJsonRequest<Restaurant>(ownerApiUrl, {
     method: 'POST',
     data: {
       name,
@@ -31,7 +31,7 @@ export const register = ({
         numberOfSeat,
       })),
     },
-  }) as Promise<Restaurant>;
+  });
 
 export const ownerLogin = (username: string, password: string) =>
   fetchJson(ownerApiUrl + '/login', {

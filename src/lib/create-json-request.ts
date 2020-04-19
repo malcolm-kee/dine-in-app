@@ -10,9 +10,13 @@ export type JsonResponse<ResponseType> =
       errors: string[];
     };
 
+export type RequestOptions = RequestInit & {
+  data?: any;
+};
+
 export const createJsonRequest = <ResponseType>(
   url: string,
-  { headers, ...options }: RequestInit = {}
+  { headers, data, body, ...options }: RequestOptions = {}
 ) => {
   const additionalHeaders: Record<string, string> =
     options.method && options.method.toLowerCase() !== 'get'
@@ -26,6 +30,7 @@ export const createJsonRequest = <ResponseType>(
 
   const { xhr, fetch } = createRequest(url, {
     ...options,
+    body: body ? body : data && JSON.stringify(data),
     headers: {
       ...additionalHeaders,
       ...headers,

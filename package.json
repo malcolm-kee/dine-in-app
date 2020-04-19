@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reach/alert": "^0.10.0",
     "@reach/dialog": "^0.9.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -22,11 +23,12 @@
     "xhfetch": "^1.0.2"
   },
   "scripts": {
-    "start": "npm run build:css && react-scripts start",
+    "start": "react-scripts start",
     "build": "npm run build:css && react-scripts build",
     "test": "react-scripts test",
     "test:coverage": "react-scripts test --coverage --watchAll=false",
-    "build:css": "postcss src/css/tailwind.css -o src/css/main.css"
+    "build:css": "postcss src/css/tailwind.css -o src/css/main.css",
+    "postinstall": "npm run build:css"
   },
   "eslintConfig": {
     "extends": "react-app"
