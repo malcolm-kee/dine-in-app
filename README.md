@@ -2,6 +2,8 @@
 
 Restaurant seating management system.
 
+Backend service is hosted in [dine-in](https://github.com/malcolm-kee/dine-in) repository.
+
 ## Demo
 
 Registration of restaurant

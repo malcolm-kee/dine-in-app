@@ -7,7 +7,7 @@ export const useQueueState = <Item>(
   const [state, setState] = React.useState(initialState);
   const queue = React.useCallback(
     (item: Item) => {
-      setState(prevState => {
+      setState((prevState) => {
         const currentState =
           prevState.length >= size
             ? reverse

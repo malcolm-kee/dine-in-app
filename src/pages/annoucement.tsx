@@ -9,7 +9,7 @@ export const Annoucement = () => {
   return (
     <Container>
       <h1 className="text-center text-3xl text-gray-700">Queue Updates</h1>
-      <SeatAvailableAnnouncement restaurant={restaurant} />
+      <SeatAvailableAnnouncement restaurant={restaurant} hasVoice />
     </Container>
   );
 };
