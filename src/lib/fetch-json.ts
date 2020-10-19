@@ -1,11 +1,13 @@
 import fetch from 'unfetch';
 
-export type RequestInitPlus = RequestInit & {
+export type RequestInitPlus = Omit<RequestInit, 'headers' | 'credentials'> & {
   data?: object;
+  headers?: Record<string, string>;
+  credentials?: 'include' | 'omit';
 };
 
 export const fetchJson = (
-  url: RequestInfo,
+  url: string,
   { headers, data, ...init }: RequestInitPlus = {}
 ): Promise<unknown> =>
   fetch(url, {
